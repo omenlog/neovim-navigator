@@ -35,6 +35,23 @@ After installing the plugin with your preferred plugin manager:
 require("navigator").setup()
 ```
 
+### Key mappings
+
+The default mappings can be overridden per direction:
+
+```lua
+require("navigator").setup({
+  keys = {
+    left = "<A-h>",
+    down = "<A-j>",
+    up = "<A-k>",
+    right = "<A-l>",
+  },
+})
+```
+
+Omitted keys keep their defaults.
+
 ## Status
 
 This plugin is a WIP. The focus behavior and public API may change, and it does

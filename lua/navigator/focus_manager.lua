@@ -10,13 +10,13 @@ local group = vim.api.nvim_create_augroup("NavigatorFocusManager", {
 local get_session_id = function()
 	utils.run("macterm pane inspect --json", function(err, data)
 		if err then
-			print("Error getting active session id: " .. err)
+			vim.notify("Navigator: error getting active session ID: " .. err, vim.log.levels.ERROR)
 			return
 		end
 
 		local ok, parsed_data = pcall(vim.json.decode, data)
 		if not ok then
-			print("Invalid JSON: " .. parsed_data)
+			vim.notify("Navigator: invalid JSON: " .. parsed_data, vim.log.levels.ERROR)
 			return
 		end
 
