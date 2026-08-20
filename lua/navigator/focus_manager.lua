@@ -8,7 +8,7 @@ local group = vim.api.nvim_create_augroup("NavigatorFocusManager", {
 })
 
 local get_session_id = function()
-	utils.run("macterm pane inspect --json", function(err, data)
+	utils.run({ "macterm", "pane", "inspect", "--json" }, function(err, data)
 		if err then
 			vim.notify("Navigator: error getting active session ID: " .. err, vim.log.levels.ERROR)
 			return

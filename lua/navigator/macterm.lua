@@ -23,7 +23,7 @@ local function create_fallback_handler(fallbackDirection)
 
 		local focused_pane = parsed_data.panes and parsed_data.panes[1]
 		if focused_pane and focused_pane.session == active_session_id then
-			utils.run("macterm pane focus --direction " .. fallbackDirection)
+			utils.run({ "macterm", "pane", "focus", "--direction", fallbackDirection })
 		end
 	end
 end
@@ -40,7 +40,7 @@ local function create_handler(direction, fallbackDirection, directionKey)
 		end
 
 		local fallbackHandler = create_fallback_handler(fallbackDirection)
-		utils.run("macterm pane focus --direction" .. direction .. "--json", fallbackHandler)
+		utils.run({ "macterm", "pane", "focus", "--direction", direction, "--json" }, fallbackHandler)
 	end
 end
 
