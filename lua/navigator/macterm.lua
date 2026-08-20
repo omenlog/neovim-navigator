@@ -47,6 +47,6 @@ end
 M.focus_up_pane = create_handler("up", "down", "k")
 M.focus_down_pane = create_handler("down", "up", "j")
 M.focus_left_pane = create_handler("left", "right", "h")
-M.focus_right_pane = create_handler("right", "left", "r")
+M.focus_right_pane = create_handler("right", "left", "l")
 
 return M
