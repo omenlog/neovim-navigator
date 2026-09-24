@@ -1,6 +1,6 @@
 # navigator.nvim
 
-A work-in-progress Neovim plugin for moving focus between Neovim splits and
+Neovim plugin for moving focus between Neovim splits and
 MacTerm panes with the same directional keybindings.
 
 ## Current behavior
@@ -23,9 +23,33 @@ whether a fallback focus command is needed.
 
 ## Requirements
 
-- Neovim with `vim.system` and `vim.json.decode` support
+- Neovim >= 0.10.0
 - [MacTerm](https://github.com/o-lopez/macterm) installed and the `macterm`
   command available in `$PATH`
+
+## Installation
+
+With [lazy.nvim](https://github.com/folke/lazy.nvim):
+
+```lua
+{
+  "omenlog/neovim-navigator",
+  config = function()
+    require("navigator").setup()
+  end,
+}
+```
+
+With [packer.nvim](https://github.com/wbthomason/packer.nvim):
+
+```lua
+use({
+  "omenlog/neovim-navigator",
+  config = function()
+    require("navigator").setup()
+  end,
+})
+```
 
 ## Setup
 
@@ -52,7 +76,20 @@ require("navigator").setup({
 
 Omitted keys keep their defaults.
 
-## Status
+## MacTerm configuration
 
-This plugin is a WIP. The focus behavior and public API may change, and it does
-not yet have configuration options or automated tests.
+Navigator mappings are handled by Neovim. Ensure MacTerm does not bind
+`<C-h>`, `<C-j>`, `<C-k>`, or `<C-l>` to its own pane-navigation commands; the
+keys must be passed through to the terminal process. Alternatively, configure
+different Navigator mappings in `setup()`.
+
+## Troubleshooting
+
+If pane navigation does not work, verify that Neovim can find the MacTerm CLI:
+
+```vim
+:!macterm pane inspect --json
+```
+
+If this command fails, ensure `macterm` is installed and available in the
+`$PATH` inherited by Neovim.
