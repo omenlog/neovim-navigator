@@ -3,6 +3,24 @@ local focus_manager = require('navigator.focus_manager')
 
 local M = {}
 
+M.init = function() end
+
+M.get_session_id = function()
+	local result = vim.system({ "macterm", "pane", "inspect", "--json" }, { text = true }):wait()
+	if result.code ~= 0 then
+		vim.notify("Navigator: error getting active session ID: " .. result.stderr, vim.log.levels.ERROR)
+		return
+	end
+
+	local ok, parsed_data = pcall(vim.json.decode, result.stdout)
+	if not ok then
+		vim.notify("Navigator: invalid JSON: " .. parsed_data, vim.log.levels.ERROR)
+		return
+	end
+
+	return parsed_data.inspect.session
+end
+
 local function create_fallback_handler(fallbackDirection)
 	return function(err, data)
 		if err then
