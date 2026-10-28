@@ -26,9 +26,9 @@ to decide whether a fallback focus command is needed.
 
 - Neovim >= 0.10.0
 - One supported terminal host:
-  - [MacTerm](https://github.com/o-lopez/macterm) installed and the `macterm`
+  - [MacTerm](https://github.com/thdxg/macterm) installed and the `macterm`
     command available in `$PATH`
-  - [Rex](https://www.superlogical.com/rex/) installed (the `rex` command is
+  - [Rex](https://www.superlogical.com/rex/) installed the `rex` command is
     added to `$PATH` automatically in Rex terminals)
 
 ## Installation
@@ -70,10 +70,10 @@ The default mappings can be overridden per direction:
 ```lua
 require("navigator").setup({
   keys = {
-    left = "<A-h>",
-    down = "<A-j>",
-    up = "<A-k>",
-    right = "<A-l>",
+    left = "<C-h>",
+    down = "<C-j>",
+    up = "<C-k>",
+    right = "<C-l>",
   },
 })
 ```
@@ -134,7 +134,9 @@ shortcuts take precedence over generated configuration.
 
 ## Troubleshooting
 
-If pane navigation does not work, verify that Neovim can find the MacTerm CLI:
+### MacTerm
+
+Verify that Neovim can find the MacTerm CLI:
 
 ```vim
 :!macterm pane inspect --json
@@ -142,3 +144,18 @@ If pane navigation does not work, verify that Neovim can find the MacTerm CLI:
 
 If this command fails, ensure `macterm` is installed and available in the
 `$PATH` inherited by Neovim.
+
+### Rex
+
+Verify that Neovim was started inside Rex and can find the Rex CLI:
+
+```vim
+:echo $REX_SESSION
+:echo $REX_BLOCK
+:!rex config reload
+```
+
+Both environment variables must be non-empty. Also verify that the generated
+`navigator.lua` and its `require("navigator")` loader are present under Rex's
+configuration directory. If Rex shortcuts still take precedence, remove the
+matching shortcuts from Rex's **Change Shortcut...** menu.
