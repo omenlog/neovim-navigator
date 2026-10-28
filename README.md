@@ -1,7 +1,7 @@
 # navigator.nvim
 
 Neovim plugin for moving focus between Neovim splits and
-MacTerm panes with the same directional keybindings.
+MacTerm or Rex panes with the same directional keybindings.
 
 ## Current behavior
 
@@ -15,17 +15,21 @@ The plugin maps these keys in normal mode:
 | `<C-l>` | Right |
 
 When a Neovim split exists in that direction, Navigator focuses that split.
-Otherwise, it invokes the MacTerm CLI to focus the pane in that direction.
+Otherwise, it invokes the CLI for the detected terminal host to focus the pane
+in that direction. Rex navigation wraps at the edge of a layout.
 
-Navigator also tracks the MacTerm session containing Neovim when Neovim gains
-focus. Focus commands return JSON, which the navigation handler uses to decide
-whether a fallback focus command is needed.
+Navigator tracks the MacTerm session containing Neovim when Neovim gains
+focus. MacTerm focus commands return JSON, which the navigation handler uses
+to decide whether a fallback focus command is needed.
 
 ## Requirements
 
 - Neovim >= 0.10.0
-- [MacTerm](https://github.com/o-lopez/macterm) installed and the `macterm`
-  command available in `$PATH`
+- One supported terminal host:
+  - [MacTerm](https://github.com/o-lopez/macterm) installed and the `macterm`
+    command available in `$PATH`
+  - [Rex](https://www.superlogical.com/rex/) installed (the `rex` command is
+    added to `$PATH` automatically in Rex terminals)
 
 ## Installation
 
@@ -76,12 +80,57 @@ require("navigator").setup({
 
 Omitted keys keep their defaults.
 
-## MacTerm configuration
+## Terminal integrations
 
-Navigator mappings are handled by Neovim. Ensure MacTerm does not bind
-`<C-h>`, `<C-j>`, `<C-k>`, or `<C-l>` to its own pane-navigation commands; the
-keys must be passed through to the terminal process. Alternatively, configure
-different Navigator mappings in `setup()`.
+Navigator selects an integration from the terminal environment: MacTerm when
+`MACTERM_SESSION` is present, or Rex when both `REX_SESSION` and `REX_BLOCK`
+are present.
+
+### MacTerm
+
+The MacTerm integration is handled entirely from Neovim. Each mapping first
+checks for a Neovim split in the requested direction. At a split edge it runs
+`macterm pane focus --direction DIRECTION --json`.
+
+Navigator records the session containing Neovim with `macterm pane inspect
+--json` whenever Neovim gains focus. If the directional command leaves focus
+in that same session, Navigator issues the opposite directional command. This
+provides wrap-like navigation at a MacTerm layout edge.
+
+Ensure MacTerm does not bind Navigator's keys to its own pane-navigation
+commands: the keys must reach Neovim. Alternatively, configure different
+Navigator mappings in `setup()`.
+
+### Rex
+
+Rex navigation has two coordinated parts:
+
+1. **Neovim integration.** As with MacTerm, a mapping first moves to an
+   adjacent Neovim split. At a split edge it runs
+   `rex focus DIRECTION --wrap`, which moves to a Rex block and wraps at the
+   layout edge.
+2. **Rex integration.** Rex must handle the same keys while the terminal is
+   not running Neovim, and pass them to Neovim while it is. Navigator generates
+   this Rex-side behavior automatically.
+
+When setup runs inside Rex, Navigator creates
+`~/.config/rex/navigator.lua` and adds this loader to
+`~/.config/rex/init.lua` when needed:
+
+```lua
+-- Load navigator.nvim's generated conditional pane bindings.
+require("navigator")
+```
+
+The generated file binds the configured keys. For each key, it checks whether
+`nvim` is the foreground process. If so, it returns `false` so Neovim receives
+the key. Otherwise, Rex calls `rex.session.focus_direction` with `wrap = true`.
+
+Navigator owns `navigator.lua`. It stores a hash of `setup().keys` in that
+file. A later setup with changed keys deletes and regenerates the file, then
+reloads Rex configuration; an unchanged hash does nothing. Remove matching
+shortcuts from the Rex app's **Change Shortcut...** menu, because app-level
+shortcuts take precedence over generated configuration.
 
 ## Troubleshooting
 
