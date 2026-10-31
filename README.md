@@ -80,6 +80,17 @@ require("navigator").setup({
 
 Omitted keys keep their defaults.
 
+### Rex executable
+
+Navigator runs `rex` by default. Set `rex_path` when the Rex executable is not
+available on `$PATH`:
+
+```lua
+require("navigator").setup({
+  rex_path = "/path/to/rex",
+})
+```
+
 ## Terminal integrations
 
 Navigator selects an integration from the terminal environment: MacTerm when

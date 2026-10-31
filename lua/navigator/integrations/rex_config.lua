@@ -164,8 +164,9 @@ end
 
 --- Create Rex bindings and add their Rex loader when absent.
 ---@param keys table<string, string>
+---@param rex_path string
 ---@return string|nil err
-function M.sync(keys)
+function M.sync(keys, rex_path)
 	-- rendering content for navigator.lua in rex side
 	local content, err = render(keys)
 	if not content then
@@ -210,7 +211,7 @@ function M.sync(keys)
 	end
 
 	if changed then
-		utils.run({ "rex", "config", "reload" }, function(err)
+		utils.run({ rex_path, "config", "reload" }, function(err)
 			if err then
 				vim.notify(err, vim.log.levels.ERROR)
 			end

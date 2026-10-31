@@ -2,22 +2,26 @@ local utils = require('navigator.utils')
 local rex_config = require('navigator.integrations.rex_config')
 
 local M = {}
+local rex_path
 
 M.get_session_id = function()
 	return vim.env.REX_SESSION
 end
 
 ---@param keys table<string, string>
+---@param path string
 ---@return string|nil err
-M.init = function(keys)
-	local err = rex_config.sync(keys)
+M.init = function(keys, path)
+	rex_path = path
+
+	local err = rex_config.sync(keys, rex_path)
 	if err then
 		return "could not configure Rex: " .. err
 	end
 end
 
 local function focus_pane(direction)
-	utils.run({ "rex", "focus", direction, "--wrap" }, function(err)
+	utils.run({ rex_path, "focus", direction, "--wrap" }, function(err)
 		if err then
 			vim.notify(err, vim.log.levels.ERROR)
 		end

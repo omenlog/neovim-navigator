@@ -6,6 +6,7 @@ local utils = require('navigator.utils')
 local M = {}
 
 local default_config = {
+	rex_path = "rex",
 	keys = {
 		left = "<C-h>",
 		right = "<C-l>",
@@ -14,6 +15,8 @@ local default_config = {
 	},
 }
 
+--- Configures Navigator integrations and key mappings.
+---@param config? { keys?: table<string, string>, rex_path?: string }
 function M.setup(config)
 	config = vim.tbl_deep_extend("force", {}, default_config, config or {})
 
@@ -28,7 +31,7 @@ function M.setup(config)
 		return
 	end
 
-	local err = navigator.init(config.keys)
+	local err = navigator.init(config.keys, config.rex_path)
 	if err then
 		vim.notify("Navigator: " .. err, vim.log.levels.ERROR)
 		return
