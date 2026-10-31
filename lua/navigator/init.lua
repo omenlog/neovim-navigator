@@ -2,23 +2,14 @@ local focus_manager = require('navigator.focus_manager')
 local macterm = require('navigator.integrations.macterm')
 local rex = require('navigator.integrations.rex')
 local utils = require('navigator.utils')
+local navigator_config = require('navigator.config')
 
 local M = {}
-
-local default_config = {
-	rex_path = "rex",
-	keys = {
-		left = "<C-h>",
-		right = "<C-l>",
-		down = "<C-j>",
-		up = "<C-k>",
-	},
-}
 
 --- Configures Navigator integrations and key mappings.
 ---@param config? { keys?: table<string, string>, rex_path?: string }
 function M.setup(config)
-	config = vim.tbl_deep_extend("force", {}, default_config, config or {})
+	config = navigator_config.setup(config)
 
 	local terminal = utils.get_terminal_program()
 	local navigator
