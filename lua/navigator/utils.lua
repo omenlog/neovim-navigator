@@ -16,12 +16,15 @@ M.get_terminal_program = function()
 	return vim.env.TERM_PROGRAM
 end
 
+--- Runs a command asynchronously and passes its error or standard output to a callback.
+---@param command_table string[]
+---@param cb? fun(err: string|nil, output: string|nil)
 M.run = function(command_table, cb)
 	assert(type(command_table) == "table", "run: command must be a table")
 
 	local callback = cb or empty
 
-	vim.system(command_table, { text = true }, function(result)
+	local ok, err = pcall(vim.system, command_table, { text = true }, function(result)
 		if result.code ~= 0 then
 			callback("Navigator: command failed: " .. result.stderr, nil)
 			return
@@ -29,6 +32,10 @@ M.run = function(command_table, cb)
 
 		callback(nil, result.stdout)
 	end)
+
+	if not ok then
+		callback("Navigator: command failed: " .. tostring(err), nil)
+	end
 end
 
 print(M.get_terminal_program())
