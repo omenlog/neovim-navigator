@@ -5,9 +5,11 @@ local empty = function() end
 --- Returns whether a value is neither nil nor an empty string.
 ---@param value any
 ---@return boolean
-M.is_set = function(value)
+local is_set = function(value)
 	return value ~= nil and value ~= ""
 end
+
+M.is_set = is_set
 
 --- Returns the terminal program hosting Neovim.
 ---@return string|nil
