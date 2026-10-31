@@ -4,8 +4,8 @@ local utils = require('navigator.utils')
 local M = {}
 
 local health_modules = {
-	macterm = 'navigator.integrations.macterm.health',
-	rex = 'navigator.integrations.rex.health',
+	macterm = 'navigator.integrations.macterm.check',
+	rex = 'navigator.integrations.rex.check',
 }
 
 function M.check()
