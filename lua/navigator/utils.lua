@@ -2,14 +2,21 @@ local M = {}
 
 local empty = function() end
 
+--- Returns whether a value is neither nil nor an empty string.
+---@param value any
+---@return boolean
+M.is_set = function(value)
+	return value ~= nil and value ~= ""
+end
+
 --- Returns the terminal program hosting Neovim.
 ---@return string|nil
 M.get_terminal_program = function()
-	if vim.env.REX_SESSION and vim.env.REX_BLOCK then
+	if is_set(vim.env.REX_SESSION) and is_set(vim.env.REX_BLOCK) then
 		return "rex"
 	end
 
-	if vim.env.MACTERM_SESSION then
+	if is_set(vim.env.MACTERM_SESSION) then
 		return "macterm"
 	end
 
@@ -37,7 +44,5 @@ M.run = function(command_table, cb)
 		callback("Navigator: command failed: " .. tostring(err), nil)
 	end
 end
-
-print(M.get_terminal_program())
 
 return M

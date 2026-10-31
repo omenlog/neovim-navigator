@@ -1,12 +1,10 @@
-local M = {}
+local utils = require('navigator.utils')
 
-local function is_set(value)
-	return value ~= nil and value ~= ""
-end
+local M = {}
 
 local function rex_config_dir()
 	local config_home = vim.env.XDG_CONFIG_HOME
-	if not is_set(config_home) then
+	if not utils.is_set(config_home) then
 		config_home = vim.fn.expand("~/.config")
 	end
 

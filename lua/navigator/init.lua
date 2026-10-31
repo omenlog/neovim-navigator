@@ -36,6 +36,4 @@ function M.setup(config)
 	vim.keymap.set("n", config.keys.up, navigator.focus_up_pane, { desc = "Navigator: focus up pane" })
 end
 
-M.setup()
-
 return M
